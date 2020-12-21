@@ -11,17 +11,17 @@ class WebDriverLifecycleController(driver: Driver) : Closeable {
         System.setProperty(driver.property, driver.location.canonicalPath)
     }
 
+    private fun List<String>.trim() = this.fold(emptyList<String>()) { acc, curr ->
+        acc + curr.trim()
+    }
+
     val webDriver: WebDriver = ChromeDriver(
-        ChromeOptions()
-            .addArguments(
-                "--ignore-ssl-errors=yes",
-                "--ignore-certificate-errors",
-                "start-maximized",
-                "disable-infobars",
-                "whitelist-ip *",
-                "proxy-server=\"direct://\"",
-                "proxy-bypass-list=*"
-            )
+        ChromeOptions().addArguments(
+            driver
+                .options
+                .split(",")
+                .trim()
+        )
     )
 
     override fun close() {

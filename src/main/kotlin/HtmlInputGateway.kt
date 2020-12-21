@@ -17,10 +17,10 @@ import java.net.URL
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class StreetName(val text: String)
-data class PostCode(val text: String)
+data class StreetNameSearchTerm(val text: String)
+data class PostCodeSearchTerm(val text: String)
 data class StartUrl(val url: URL)
-data class Driver(val property: String, val location: File)
+data class Driver(val property: String, val location: File, val options: String)
 
 interface HtmlInputGateway : NextUpcomingInputGateway
 
@@ -34,10 +34,10 @@ typealias HtmlInputGatewayError = HtmlInputGatewayException
 
 fun createHtmlInputGateway(
     startUrl: StartUrl,
-    streetName: StreetName,
-    postCode: PostCode,
+    streetNameSearchTerm: StreetNameSearchTerm,
+    postCodeSearchTerm: PostCodeSearchTerm,
     driver: Driver,
-    waitDurationSeconds: WaitDurationSeconds
+    htmlDriverWaitDurationSeconds: WaitDurationSeconds
 ): HtmlInputGateway {
 
     val streetNameTextEditIdAttributeValue = "P1_C31_input"
@@ -54,7 +54,7 @@ fun createHtmlInputGateway(
     val htmlServiceTypeRefuseDiscriminator = "refuse"
 
     fun <R> webDriving(block: WebDriverCommander.() -> Either<HtmlInputGatewayError, R>): Either<HtmlInputGatewayError, R> =
-        WebDriverCommander(driver, waitDurationSeconds).use(block)
+        WebDriverCommander(driver, htmlDriverWaitDurationSeconds).use(block)
 
     fun parseServiceDate(serviceDateHtmlText: String): Either<HtmlInputGatewayError, ServiceDate> =
         try {
@@ -78,10 +78,10 @@ fun createHtmlInputGateway(
     return object : HtmlInputGateway {
         override fun nextUpcoming(): Either<HtmlInputGatewayError, ServiceDetails> = webDriving {
             go(startUrl.url).flatMap {
-                id(streetNameTextEditIdAttributeValue).map { it.sendKeys(streetName.text) }
-                id(postCodeTextEditIdAttributeValue).map { it.sendKeys(postCode.text) }
+                id(streetNameTextEditIdAttributeValue).map { it.sendKeys(streetNameSearchTerm.text) }
+                id(postCodeTextEditIdAttributeValue).map { it.sendKeys(postCodeSearchTerm.text) }
                 x(searchButtonXPathSelectorText).map { it.click() }
-                x("//td[text() = '${streetName.text}']").map { it.click() }
+                x("//td[text() = '${streetNameSearchTerm.text}']").map { it.click() }
                 xs(serviceDetailsResultsXPathSelectorText).flatMap { serviceDateAndTypeTdElements ->
                     serviceDateAndTypeTdElements[serviceDetailsResultsDateOffset].text.let { serviceDateHtmlText ->
                         serviceDateAndTypeTdElements[serviceDetailsResultsTypeOffset].text.let { serviceTypeHtmlText ->

@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.Driver
-import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.PostCode
+import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.PostCodeSearchTerm
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.StartUrl
-import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.StreetName
+import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.StreetNameSearchTerm
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.WaitDurationSeconds
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.createHtmlInputGateway
 import java.io.File
@@ -23,11 +23,13 @@ internal class HtmlInputGatewayTests {
         private const val driverPathOsX = "bin/chromedriver_mac_87"
         private const val driverPathLinux = "bin/chromedriver_linux_87"
         private const val driverProperty = "webdriver.chrome.driver"
+        private const val driverOptions = "--ignore-ssl-errors=yes, --ignore-certificate-errors, " +
+            "start-maximized, disable-infobars, whitelist-ip *, proxy-server=\"direct://\", proxy-bypass-list=*"
         private const val waitDurationSecondsMagnitude = 1L
 
         val startUrl = StartUrl(URL(startUrlText))
-        val streetName = StreetName(streetNameText)
-        val postCode = PostCode(postCodeText)
+        val streetNameSearchTerm = StreetNameSearchTerm(streetNameText)
+        val postCodeSearchTerm = PostCodeSearchTerm(postCodeText)
         val waitDurationSeconds = WaitDurationSeconds(waitDurationSecondsMagnitude)
 
         private val driver: Driver = Driver(
@@ -37,7 +39,8 @@ internal class HtmlInputGatewayTests {
                     System.getProperty("os.name").toLowerCase().contains("mac") -> driverPathOsX
                     else -> driverPathLinux
                 }
-            )
+            ),
+            driverOptions
         )
     }
 
@@ -46,8 +49,8 @@ internal class HtmlInputGatewayTests {
         assertTrue(
             createHtmlInputGateway(
                 startUrl,
-                streetName,
-                postCode,
+                streetNameSearchTerm,
+                postCodeSearchTerm,
                 driver,
                 waitDurationSeconds
             ).nextUpcoming().isRight()

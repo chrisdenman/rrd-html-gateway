@@ -14,6 +14,8 @@ class WebDriverLifecycleController(driver: Driver) : Closeable {
     val webDriver: WebDriver = ChromeDriver(
         ChromeOptions()
             .addArguments(
+                "--ignore-ssl-errors=yes",
+                "--ignore-certificate-errors",
                 "start-maximized",
                 "disable-infobars",
                 "whitelist-ip *",

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.Driver
+import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.DriverLocation
+import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.DriverOptions
+import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.DriverProperty
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.PostCodeSearchTerm
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.StartUrl
 import uk.co.ceilingcat.rrd.gateways.htmlinputgateway.StreetNameSearchTerm
@@ -33,14 +36,19 @@ internal class HtmlInputGatewayTests {
         val waitDurationSeconds = WaitDurationSeconds(waitDurationSecondsMagnitude)
 
         private val driver: Driver = Driver(
-            driverProperty,
-            File(
-                when {
-                    System.getProperty("os.name").toLowerCase().contains("mac") -> driverPathOsX
-                    else -> driverPathLinux
-                }
+            DriverProperty(driverProperty),
+            DriverLocation(
+                File(
+                    when {
+                        System
+                            .getProperty("os.name")
+                            .toLowerCase()
+                            .contains("mac") -> driverPathOsX
+                        else -> driverPathLinux
+                    }
+                )
             ),
-            driverOptions
+            DriverOptions(driverOptions),
         )
     }
 

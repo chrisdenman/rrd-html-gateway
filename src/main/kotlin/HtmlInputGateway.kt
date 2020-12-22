@@ -20,7 +20,11 @@ import java.time.format.DateTimeFormatter
 data class StreetNameSearchTerm(val text: String)
 data class PostCodeSearchTerm(val text: String)
 data class StartUrl(val url: URL)
-data class Driver(val property: String, val location: File, val options: String)
+
+data class DriverProperty(val text: String)
+data class DriverLocation(val file: File)
+data class DriverOptions(val text: String)
+data class Driver(val property: DriverProperty, val location: DriverLocation, val options: DriverOptions)
 
 interface HtmlInputGateway : NextUpcomingInputGateway
 

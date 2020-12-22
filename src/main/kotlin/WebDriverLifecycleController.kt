@@ -8,7 +8,7 @@ import java.io.Closeable
 class WebDriverLifecycleController(driver: Driver) : Closeable {
 
     init {
-        System.setProperty(driver.property, driver.location.canonicalPath)
+        System.setProperty(driver.property.text, driver.location.file.canonicalPath)
     }
 
     private fun List<String>.trim() = this.fold(emptyList<String>()) { acc, curr ->
@@ -19,6 +19,7 @@ class WebDriverLifecycleController(driver: Driver) : Closeable {
         ChromeOptions().addArguments(
             driver
                 .options
+                .text
                 .split(",")
                 .trim()
         )

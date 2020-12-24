@@ -1,3 +1,3 @@
 # Package uk.co.ceilingcat.rrd.gateways.htmlinputgateway
 
-HTML Input Gateway
+An HTML Input Gateway that uses scrapes Stevenage's website to determine the next upcoming service's details.

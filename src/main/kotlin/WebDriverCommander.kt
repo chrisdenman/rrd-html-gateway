@@ -15,9 +15,14 @@ sealed class WebDriverCommanderError {
     data class ThrowableCaught(val cause: Throwable) : WebDriverCommanderError()
 }
 
+/**
+ * Represents the maximum duration to wait for a browser automation command to complete.
+ *
+ * @param magnitude the value in Seconds
+ */
 data class WaitDurationSeconds(val magnitude: Long)
 
-class WebDriverCommander(driver: Driver, private val waitDurationSeconds: WaitDurationSeconds) : Closeable {
+internal class WebDriverCommander(driver: Driver, private val waitDurationSeconds: WaitDurationSeconds) : Closeable {
 
     private val webDriverLifecycleController: WebDriverLifecycleController = WebDriverLifecycleController(driver)
 

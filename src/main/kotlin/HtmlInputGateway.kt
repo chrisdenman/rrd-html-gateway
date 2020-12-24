@@ -17,17 +17,54 @@ import java.net.URL
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class StreetNameSearchTerm(val text: String)
-data class PostCodeSearchTerm(val text: String)
-data class StartUrl(val url: URL)
-
-data class DriverProperty(val text: String)
-data class DriverLocation(val file: File)
-data class DriverOptions(val text: String)
+/**
+ * The Selenium driver's information.
+ *
+ * @param property the system property to set with the location of the driver executable
+ * @param location the location of the driver's executable
+ * @param options the options to provide to the driver upon construction
+ */
 data class Driver(val property: DriverProperty, val location: DriverLocation, val options: DriverOptions)
 
+/**
+ * @param file the driver file's location
+ */
+data class DriverLocation(val file: File)
+
+/**
+ * @param text the options to provide when constructing the driver proper
+ */
+data class DriverOptions(val text: String)
+
+/**
+ * @param text the name of the system property that is used to indicate the driver's executable file location
+ */
+data class DriverProperty(val text: String)
+
+/**
+ * @param text the value to use when inputting a post code whilst driving the website
+ */
+data class PostCodeSearchTerm(val text: String)
+
+/**
+ * @param url the starting url to use whilst automating the website
+ */
+data class StartUrl(val url: URL)
+
+/**
+ * @param text the value to use when inputting a street name whilst driving the website
+ */
+data class StreetNameSearchTerm(val text: String)
+
+/**
+ * An input gateway interface that is capable of scraping Stevenage council's website for the next upcoming service's
+ * details.
+ */
 interface HtmlInputGateway : NextUpcomingInputGateway
 
+/**
+ * The errors that `HtmlInputGateway.notify(...)` may return, contained in a `Left(.)`
+ */
 sealed class HtmlInputGatewayException : Throwable() {
     object UnspecifiedError : HtmlInputGatewayException()
     data class UnableToParseHtmlServiceDate(val htmlText: String) : HtmlInputGatewayException()
@@ -36,6 +73,17 @@ sealed class HtmlInputGatewayException : Throwable() {
 
 typealias HtmlInputGatewayError = HtmlInputGatewayException
 
+/**
+ * Create and returns a `HtmlInputGateway`.
+ *
+ * @param startUrl the scraping processes starting url
+ * @param streetNameSearchTerm the street name to search for
+ * @param postCodeSearchTerm the post code to search for
+ * @param driver the driver's details
+ * @param htmlDriverWaitDurationSeconds the maximum time to wait between browser automating operations
+ *
+ * @constructor
+ */
 fun createHtmlInputGateway(
     startUrl: StartUrl,
     streetNameSearchTerm: StreetNameSearchTerm,

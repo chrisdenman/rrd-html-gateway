@@ -5,7 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import java.io.Closeable
 
-class WebDriverLifecycleController(driver: Driver) : Closeable {
+internal class WebDriverLifecycleController(driver: Driver) : Closeable {
 
     init {
         System.setProperty(driver.property.text, driver.location.file.canonicalPath)
